@@ -67,7 +67,7 @@ namespace TicTacToeConsole.Models
                 {
                     if (groups.Where(x => x.FindAll(y => y.Equals("2-2")).Any()).Any())
                     {
-                        BestMove = "2-2";
+                        BestMove = Positions[1, 1];
                     }
                     else
                     {
