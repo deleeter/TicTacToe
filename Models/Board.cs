@@ -49,6 +49,13 @@ namespace TicTacToeConsole.Models
                         GameActive = false;
                         Console.WriteLine(string.Format("{0} wins!", currentPlayer));
                     }
+                    else if (group.Count(x => x.Equals(currentPlayer)) == 0
+                    && group.FindAll(x => x.Contains("-")).Count == 1)
+                    {
+                        BestMove = group.Where(x => x.Contains("-"))
+                                      .FirstOrDefault().ToString();
+                        break;
+                    }
                     else if (group.Count(x => x.Equals(currentPlayer)) == 2
                         && group.FindAll(x => x.Contains("-")).Any())
                     {
