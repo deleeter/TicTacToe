@@ -117,13 +117,10 @@ namespace TicTacToeConsole.Models
             {
                 move = GetCornerMove();
             }
-            else if (Positions[0, 0].IsOpponent()
-                && Positions[2, 2].IsOpponent())
-            {
-                move = GetMiddleMove();
-            }
-            else if (Positions[0, 2].IsOpponent()
-                && Positions[2, 0].IsOpponent())
+            else if ((Positions[0, 0].IsOpponent()
+                && Positions[2, 2].IsOpponent()
+                || (Positions[0, 2].IsOpponent()
+                && Positions[2, 0].IsOpponent())))
             {
                 move = GetMiddleMove();
             }
