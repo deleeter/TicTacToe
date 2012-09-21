@@ -157,7 +157,7 @@ namespace TicTacToeConsole.Models
             }
             else if (Positions[2, 0].IsAvailable()
                 && !Positions[1, 0].IsOpponent()
-                && !Positions[2, 1].IsOpponent())
+                && !Positions[1, 2].IsOpponent())
             {
                 move = Positions[2, 0];
             }
