@@ -83,7 +83,8 @@ namespace TicTacToeConsole.Models
                         string.Format("{0} wins!", currentPlayer));
                     break;
                 }
-                else if (group.Count(x => x.Equals(PlayerSymbol.O.ToString())) == 2)
+                else if (group.Count(x => x.Equals(PlayerSymbol.O.ToString())) == 2
+                    && group.Contains("-"))
                 {
                     BestMove = group.Where(x => x.IsAvailable())
                                   .FirstOrDefault().ToString();
@@ -129,6 +130,13 @@ namespace TicTacToeConsole.Models
                 && Positions[2, 0].IsOpponent())))
             {
                 move = GetMiddleMove();
+            }
+            else if ((Positions[1, 2].IsOpponent() && Positions[2, 1].IsOpponent())
+                || (Positions[2, 1].IsOpponent() && Positions[1, 0].IsOpponent())
+                || (Positions[1, 0].IsOpponent() && Positions[0, 1].IsOpponent())
+                || (Positions[0, 1].IsOpponent() && Positions[1, 2].IsOpponent()))
+            {
+                move = GetCornerMove();
             }
             else
             {
