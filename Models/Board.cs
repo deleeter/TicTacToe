@@ -106,7 +106,11 @@ namespace TicTacToeConsole.Models
         private string GetStrategicMove()
         {
             string move = "";
-            if((Positions[1,1].IsOpponent()
+            if (Positions[1, 1].IsAvailable())
+            {
+                move = Positions[1, 1];
+            }
+            else if((Positions[1,1].IsOpponent()
                 && (Positions[0, 0].IsOpponent()
                 || (Positions[0, 2].IsOpponent()
                 || Positions[2, 2].IsOpponent()))))
