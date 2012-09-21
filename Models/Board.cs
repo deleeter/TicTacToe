@@ -147,15 +147,21 @@ namespace TicTacToeConsole.Models
             {
                 move = Positions[0, 0];
             }
-            else if (Positions[2, 0].IsAvailable())
+            else if (Positions[2, 0].IsAvailable()
+                && !Positions[1, 0].IsOpponent()
+                && !Positions[2, 1].IsOpponent())
             {
                 move = Positions[2, 0];
             }
-            else if (Positions[2, 2].IsAvailable())
+            else if (Positions[2, 2].IsAvailable()
+                && !Positions[0, 1].IsOpponent()
+                && !Positions[1, 0].IsOpponent())
             {
                 move = Positions[2, 2];
             }
-            else if (Positions[0, 2].IsAvailable())
+            else if (Positions[0, 2].IsAvailable()
+                && !Positions[1, 0].IsOpponent()
+                && !Positions[2, 1].IsOpponent())
             {
                 move = Positions[0, 2];
             }
