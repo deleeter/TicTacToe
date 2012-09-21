@@ -36,7 +36,7 @@ namespace TicTacToeConsole
 
                 UpdateBoard(response);
                 Console.WriteLine("Thinking...");
-                Thread.Sleep(1);
+                Thread.Sleep(500);
                 if (_board.GameActive)
                     UpdateBoard(_board.BestMove, true);
             }
