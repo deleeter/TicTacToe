@@ -11,7 +11,7 @@ namespace TicTacToeConsole.Models
         public string[,] Positions { get; private set; }
         public bool GameActive { get; set; }
         public string BestMove { get; private set; }
-
+        
         public Board()
         {
             GameActive = true;
@@ -31,7 +31,7 @@ namespace TicTacToeConsole.Models
         public void UpdateBoardAndCheckForWin(PositionUpdate positionUpdate)
         {
             Positions[positionUpdate.X-1, positionUpdate.Y-1] = 
-                positionUpdate.PositionIdentifier.ToString();
+                string.Format("{0}", positionUpdate.PositionIdentifier.ToString());
 
             CheckForWinnerAndSetBestMove(positionUpdate.PositionIdentifier.ToString());
         }
@@ -40,40 +40,12 @@ namespace TicTacToeConsole.Models
         {
             var groups = GetWinningGroupLists();
             BestMove = string.Empty;
-            if (groups.SelectMany(x => x.FindAll(y => y.Contains("-"))).Any())
+            if (groups.SelectMany(x => x.FindAll(y => y.IsAvailable())).Any())
             {
-                foreach (var group in groups)
-                {
-                    if (group.Count(x => x.Equals(currentPlayer)) == 3)
-                    {
-                        GameActive = false;
-                        Console.WriteLine(string.Format("{0} wins!", currentPlayer));
-                    }
-                    else if (group.Count(x => x.Equals(currentPlayer)) == 0
-                    && group.FindAll(x => x.Contains("-")).Count == 1)
-                    {
-                        BestMove = group.Where(x => x.Contains("-"))
-                                      .FirstOrDefault().ToString();
-                        break;
-                    }
-                    else if (group.Count(x => x.Equals(currentPlayer)) == 2
-                        && group.FindAll(x => x.Contains("-")).Any())
-                    {
-                        BestMove = group.Where(x => x.Contains("-"))
-                                      .FirstOrDefault().ToString();
-                    }
-                }
+                CheckForWinAndBlock(groups, currentPlayer);
                 if (string.IsNullOrEmpty(BestMove))
                 {
-                    if (groups.Where(x => x.FindAll(y => y.Equals("2-2")).Any()).Any())
-                    {
-                        BestMove = Positions[1, 1];
-                    }
-                    else
-                    {
-                        BestMove = groups.SelectMany(x => x.FindAll(y => y.Contains("-")))
-                            .FirstOrDefault();
-                    }
+                    BestMove = GetInitialBestMove(groups);
                 }
             }
             else
@@ -97,6 +69,126 @@ namespace TicTacToeConsole.Models
                                         Positions[i, 1],
                                             Positions[i, 2]);
             }
+        }
+
+        private void CheckForWinAndBlock(IList<List<string>> groups,
+            string currentPlayer)
+        {
+            foreach (var group in groups)
+            {
+                if (group.Count(x => x.Equals(currentPlayer)) == 3)
+                {
+                    GameActive = false;
+                    Console.WriteLine(
+                        string.Format("{0} wins!", currentPlayer));
+                    break;
+                }
+                else if (group.Count(x => x.Equals(currentPlayer)) == 2
+                && group.FindAll(x => x.IsAvailable()).Count == 1)
+                {
+                    BestMove = group.Where(x => x.IsAvailable())
+                                  .FirstOrDefault().ToString();
+                }
+            }
+        }
+
+        private string GetInitialBestMove(IList<List<string>> groups)
+        {
+            string move = GetStrategicMove();
+            if (string.IsNullOrEmpty(move))
+            {
+                move = GetRandomMove();
+            }
+            
+            return move;
+        }
+
+        private string GetStrategicMove()
+        {
+            string move = "";
+            if (Positions[1, 1].IsAvailable())
+            {
+                move = Positions[1, 1];
+            }
+            else if((Positions[1,1].IsOpponent()
+                && (Positions[0, 0].IsOpponent()
+                || (Positions[0, 2].IsOpponent()
+                || Positions[2, 2].IsOpponent()))))
+            {
+                move = GetCornerMove();
+            }
+            else if (Positions[0, 0].IsOpponent()
+                && Positions[2, 2].IsOpponent())
+            {
+                move = GetMiddleMove();
+            }
+            else if (Positions[0, 2].IsOpponent()
+                && Positions[2, 0].IsOpponent())
+            {
+                move = GetMiddleMove();
+            }
+            else
+            {
+                move = GetRandomMove();
+            }
+            
+            return move;
+        }
+
+        private string GetCornerMove()
+        {
+            string move = "";
+            if (Positions[0, 0].IsAvailable())
+            {
+                move = Positions[0, 0];
+            }
+            else if (Positions[2, 0].IsAvailable())
+            {
+                move = Positions[2, 0];
+            }
+            else if (Positions[2, 2].IsAvailable())
+            {
+                move = Positions[2, 2];
+            }
+            else if (Positions[0, 2].IsAvailable())
+            {
+                move = Positions[0, 2];
+            }
+            return move;
+        }
+
+        private string GetMiddleMove()
+        {
+            string move = "";
+            if (Positions[0, 1].IsAvailable())
+            {
+                move = Positions[0, 1];
+            }
+            else if (Positions[1, 0].IsAvailable())
+            {
+                move = Positions[1, 0];
+            }
+            else if (Positions[1, 2].IsAvailable())
+            {
+                move = Positions[1, 2];
+            }
+            return move;
+        }
+
+
+        private string GetRandomMove()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (Positions[i, j].IsAvailable())
+                    {
+                        return Positions[i, j];
+                    }
+                }
+            }
+            return "";
         }
 
         private IList<List<string>> GetWinningGroupLists()
@@ -139,5 +231,18 @@ namespace TicTacToeConsole.Models
         public PlayerSymbol PositionIdentifier { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+    }
+
+    public static class Helpers
+    {
+        public static bool IsAvailable(this string position)
+        {
+            return position.Contains("-");
+        }
+
+        public static bool IsOpponent(this string position)
+        {
+            return position.Contains("X");
+        }
     }
 }

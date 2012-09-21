@@ -36,7 +36,7 @@ namespace TicTacToeConsole
 
                 UpdateBoard(response);
                 Console.WriteLine("Thinking...");
-                Thread.Sleep(1000);
+                Thread.Sleep(1);
                 if (_board.GameActive)
                     UpdateBoard(_board.BestMove, true);
             }
@@ -51,7 +51,7 @@ namespace TicTacToeConsole
                 : PlayerSymbol.X;
 
             if (!string.IsNullOrEmpty(move) 
-                && move.Contains("-") 
+                && move.IsAvailable() 
                 && move.Length.Equals(3))
             {
                 string[] coordinateArray = move.Split('-');
