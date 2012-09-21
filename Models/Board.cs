@@ -83,6 +83,12 @@ namespace TicTacToeConsole.Models
                         string.Format("{0} wins!", currentPlayer));
                     break;
                 }
+                else if (group.Count(x => x.Equals(PlayerSymbol.O.ToString())) == 2)
+                {
+                    BestMove = group.Where(x => x.IsAvailable())
+                                  .FirstOrDefault().ToString();
+                    break;
+                }
                 else if (group.Count(x => x.Equals(currentPlayer)) == 2
                 && group.FindAll(x => x.IsAvailable()).Count == 1)
                 {
@@ -135,7 +141,9 @@ namespace TicTacToeConsole.Models
         private string GetCornerMove()
         {
             string move = "";
-            if (Positions[0, 0].IsAvailable())
+            if (Positions[0, 0].IsAvailable()
+                && !Positions[2,1].IsOpponent()
+                && !Positions[1,2].IsOpponent())
             {
                 move = Positions[0, 0];
             }
