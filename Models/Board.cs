@@ -83,8 +83,9 @@ namespace TicTacToeConsole.Models
                         string.Format("{0} wins!", currentPlayer));
                     break;
                 }
-                else if (group.Count(x => x.Equals(PlayerSymbol.O.ToString())) == 2
-                    && group.Contains("-"))
+                else if (group.FindAll(x => x.Equals(
+                    PlayerSymbol.O.ToString())).Count() == 2
+                    && group.FindAll(x => x.Contains("-")).Any())
                 {
                     BestMove = group.Where(x => x.IsAvailable())
                                   .FirstOrDefault().ToString();
