@@ -34,15 +34,17 @@ namespace TicTacToeConsole
                 if (response.ToUpper() == "QUIT")
                     System.Environment.Exit(0);
 
-                UpdateBoard(response);
-                Console.WriteLine("Thinking...");
-                Thread.Sleep(1);
-                if (_board.GameActive)
-                    UpdateBoard(_board.BestMove, true);
+                if (UpdateBoard(response))
+                {
+                    Console.WriteLine("Thinking...");
+                    Thread.Sleep(1);
+                    if (_board.GameActive)
+                        UpdateBoard(_board.BestMove, true);
+                }
             }
         }
 
-        private static void UpdateBoard(string move, bool computer = false)
+        private static bool UpdateBoard(string move, bool computer = false)
         {
             int x = 0;
             int y = 0;
@@ -51,8 +53,7 @@ namespace TicTacToeConsole
                 : PlayerSymbol.X;
 
             if (!string.IsNullOrEmpty(move) 
-                && move.IsAvailable() 
-                && move.Length.Equals(3))
+                && _board.HasAvailablePosition(move))
             {
                 string[] coordinateArray = move.Split('-');
                 Int32.TryParse(coordinateArray[0], out x);
@@ -69,12 +70,15 @@ namespace TicTacToeConsole
                 else
                 {
                     ShowInvalidInputError();
+                    return false;
                 }
             }
             else
             {
                 ShowInvalidInputError();
-            }                
+                return false;
+            }
+            return true;
         }
 
         private static void ShowInvalidInputError()

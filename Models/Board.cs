@@ -264,5 +264,20 @@ namespace TicTacToeConsole.Models
         {
             return position.Contains("X");
         }
+
+        public static bool HasAvailablePosition(this Board board, string position)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (board.Positions[i, j] == position.Trim())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
