@@ -15,6 +15,7 @@ namespace TicTacToeConsole
         {
             BeginPlaying();
         }
+
         private static void BeginPlaying()
         {
             _board = new Board();

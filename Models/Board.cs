@@ -74,16 +74,15 @@ namespace TicTacToeConsole.Models
         private void CheckForWinAndBlock(IList<List<string>> groups,
             string currentPlayer)
         {
+            if (groups.Any(x => x.Where(y => y.Equals(currentPlayer)).Count() == 3))
+            {
+                GameActive = false;
+                Console.WriteLine(string.Format("{0} wins!", currentPlayer));
+            }
             foreach (var group in groups)
             {
-                if (group.Count(x => x.Equals(currentPlayer)) == 3)
-                {
-                    GameActive = false;
-                    Console.WriteLine(
-                        string.Format("{0} wins!", currentPlayer));
-                    break;
-                }
-                else if (group.FindAll(x => x.Equals(
+
+                if (group.FindAll(x => x.Equals(
                     PlayerSymbol.O.ToString())).Count() == 2
                     && group.FindAll(x => x.Contains("-")).Any())
                 {
@@ -139,7 +138,12 @@ namespace TicTacToeConsole.Models
             {
                 move = GetCornerMove();
             }
-            else
+            else if (Positions[1, 2].IsOpponent()
+                && Positions[2, 0].IsOpponent())
+            {
+                move = GetMiddleMove();
+            }
+            if(string.IsNullOrEmpty(move))
             {
                 move = GetRandomMove();
             }
